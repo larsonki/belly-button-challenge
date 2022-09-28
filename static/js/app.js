@@ -19,30 +19,53 @@ function init() {
 // Build charts function using the sample from the initialize function to create each of the charts.
 function buildCharts(sample) {
     d3.json(url).then(function (data) {
+        // Define variables needed for the charts
         var allSamples = data.samples;
         var sampleInfo = allSamples.filter(row => row.id == sample);
-        var sampleValues = sampleInfo[0].sample_values.slice(0,10).reverse();
-        var otuIds = sampleInfo[0].otu_ids.slice(0,10).reverse();
-        var otuLabels = sampleInfo[0].otu_labels.slice(0,10).reverse();
-        console.log(otuIds);
+        var sampleValues = sampleInfo[0].sample_values;
+        var sampleValuesSlice = sampleValues.slice(0,10).reverse();
+        var otuIds = sampleInfo[0].otu_ids;
+        var otuIdsSlice = otuIds.slice(0,10).reverse();
+        var otuLabels = sampleInfo[0].otu_labels;
+        var otuLabelsSlice = otuLabels.slice(0,10).reverse();
+        // var ylabel = []
+
+        // for (var i = 0; i < 10; i++) {
+        //     ylabel.append(`OTU ${otuIdsSlice[i]}`);
+        // }
+
+        console.log(sampleValues);
+
+        // Create the first chart (bar chart)
         var trace1 = {
-            x: sampleValues,
-            y: `${otuIds}`,
+            x: sampleValuesSlice,
+            y: [`OTU ${otuIdsSlice[0]}`, `OTU ${otuIdsSlice[1]}`, `OTU ${otuIdsSlice[2]}`, `OTU ${otuIdsSlice[3]}`, `OTU ${otuIdsSlice[4]}`, 
+            `OTU ${otuIdsSlice[5]}`, `OTU ${otuIdsSlice[6]}`, `OTU ${otuIdsSlice[7]}`, `OTU ${otuIdsSlice[8]}`, `OTU ${otuIdsSlice[9]}`],
+
             type: "bar",
             orientation: "h",
-            text: otuLabels,
+            text: otuLabelsSlice,
         };
         var data = [trace1];
-        var layout = {
-            yaxis: {
-                tickmode: "array",
-                tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                ticktext: [`OTU ${otuIds[0]}`, `OTU ${otuIds[1]}`, `OTU ${otuIds[2]}`, `OTU ${otuIds[3]}`, `OTU ${otuIds[4]}`, 
-                `OTU ${otuIds[5]}`, `OTU ${otuIds[6]}`, `OTU ${otuIds[7]}`, `OTU ${otuIds[8]}`, `OTU ${otuIds[9]}`]
+        Plotly.newPlot("bar", data)
+
+        // Create the second chart (bubble chart)
+        var trace2 = {
+            x: otuIds,
+            y: sampleValues,
+            mode: "markers",
+            marker: {
+                size: sampleValues,
+                color: otuIds,
+                colorscale: "Earth"
             }
-            // showlegend: false,
         };
-        Plotly.newPlot("bar", data, layout)
+        var data2 = [trace2];
+        var layout = {
+            showlegend: false
+        };
+
+        Plotly.newPlot("bubble", data2, layout);
     });
 };
 
