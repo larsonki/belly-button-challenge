@@ -19,9 +19,30 @@ function init() {
 // Build charts function using the sample from the initialize function to create each of the charts.
 function buildCharts(sample) {
     d3.json(url).then(function (data) {
-        let trace1 = {
-            x: data.sample_values
-        }
+        var allSamples = data.samples;
+        var sampleInfo = allSamples.filter(row => row.id == sample);
+        var sampleValues = sampleInfo[0].sample_values.slice(0,10).reverse();
+        var otuIds = sampleInfo[0].otu_ids.slice(0,10).reverse();
+        var otuLabels = sampleInfo[0].otu_labels.slice(0,10).reverse();
+        console.log(otuIds);
+        var trace1 = {
+            x: sampleValues,
+            y: `${otuIds}`,
+            type: "bar",
+            orientation: "h",
+            text: otuLabels,
+        };
+        var data = [trace1];
+        var layout = {
+            yaxis: {
+                tickmode: "array",
+                tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                ticktext: [`OTU ${otuIds[0]}`, `OTU ${otuIds[1]}`, `OTU ${otuIds[2]}`, `OTU ${otuIds[3]}`, `OTU ${otuIds[4]}`, 
+                `OTU ${otuIds[5]}`, `OTU ${otuIds[6]}`, `OTU ${otuIds[7]}`, `OTU ${otuIds[8]}`, `OTU ${otuIds[9]}`]
+            }
+            // showlegend: false,
+        };
+        Plotly.newPlot("bar", data, layout)
     });
 };
 
