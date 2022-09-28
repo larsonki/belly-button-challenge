@@ -1,1 +1,1 @@
-# belly-button-challenge
+**Click [here](https://larsonki.github.io/belly-button-challenge/) to access the visualizations of belly button data.**
